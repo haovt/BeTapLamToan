@@ -1,643 +1,603 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tập Làm Toán Cho Bé</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tập Làm Toán Cho Bé</title>
 
-
-<style>
-body{
-  margin:0;
+  <style>
+/* ====== BASE ====== */
+body {
+  margin: 0;
   font-family: "Comic Sans MS", system-ui, sans-serif;
-  background:#fff0f6; /* hồng nhạt nền */
+  background: #fff0f6;
 }
 
-/* Tabs đầu trang */
-.tabs{
-  display:flex;
-  background:#ff9ac4; /* hồng pastel */
+/* ====== TABS ====== */
+.tabs {
+  display: flex;
+  background: #ff9ac4;
 }
 
-.tabs button{
-  flex:1;
-  padding:16px;
-  font-size:18px;
-  border:none;
-  background:none;
-  color:white;
+.tabs button {
+  flex: 1;
+  padding: 16px;
+  font-size: 18px;
+  border: none;
+  background: none;
+  color: white;
 }
 
-.tabs button.active{
-  background:#ff74b1; /* hồng đậm hơn */
+.tabs button.active {
+  background: #ff74b1;
 }
 
-/* Nội dung tab */
-section{
-  display:none;
-  padding:16px;
+/* ====== TAB CONTENT ====== */
+section {
+  display: none;
+  padding: 16px;
 }
 
-section.active{
-  display:block;
+section.active {
+  display: block;
 }
 
-/* Input – bo góc tròn */
-input,select,button{
-  width:100%;
-  padding:14px;
-  font-size:18px;
-  margin:6px 0;
-  border-radius:14px;
-  border:2px solid #ffd6ec;
-  background:white;
+/* ====== FORM ELEMENTS ====== */
+input,
+select,
+button {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 18px;
+  margin: 6px 0;
+  border-radius: 14px;
+  border: 2px solid #ffd6ec;
+  background: white;
 }
 
-/* Khung bài tập */
-.exercise{
-  background:white;
-  padding:18px;
-  border-radius:18px;
-  box-shadow:0 4px 10px rgba(255,105,180,0.25);
-  margin-bottom:16px;
-  border: 2px dashed #ffb6e6; /* viền dễ thương */
+/* ====== GLOBAL BUTTON STYLE ====== */
+button {
+  font-weight: bold;
+  border: none;
+  transition: transform .1s;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
 }
 
-/* Ô đáp án */
-.answers{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-  gap:10px;
+button:active {
+  transform: scale(.96);
 }
 
-.answers button{
-  font-size:20px;
-  font-weight:bold;
-  background:#ffe8f5;
-  border:2px solid #ffb6e6;
-}
-
-/* Nút chính */
-
-button.primary{
-  background:#ff85c0;  /* hồng dâu */
-  color:white;
-  border:none;
-}
-
-button.practice{
-  background:#7b6cff; /* tím pastel */
-  color:white;
-  border:none;
-}
-
-/* Nút bắt đầu – xanh dương pastel */
+/* ====== BUTTON COLORS ====== */
+button.primary,
+.practice,
 #startButton {
-  background-color: #6fa8ff;
+  background:#ff4fa8;
   color:white;
 }
 
-/* Nút hoàn thành – xanh lá pastel */
+/* xanh lá – hoàn thành */
 #finishButton {
-  background-color: #8be28b;
+  background:#2ecc71;
   color:white;
   display:none;
 }
 
-/* Khi đang chọn tạm thời */
-.selected{
-  background:#fff3cd !important; /* vàng pastel */
+/* xanh dương – thêm bài */
+button.add {
+  background:#6fa8ff;
+  color:white;
 }
 
-/* kết quả đúng sai */
-.correct{
-  background:#d8ffd8 !important;
-  border:2px solid #3bbf5c !important;
+/* nút nhẹ – qua câu tiếp theo */
+.nextBtnSoft,
+#nextButton {
+  background:#dddddd;
+  color:#555;
+  border:1px solid #aaa;
+  box-shadow:none;
 }
 
-.wrong{
-  background:#ffd6d6 !important;
-  border:2px solid #ff4d4d !important;
+/* nút xóa dữ liệu — cố tình không nổi bật */
+button.delete-all {
+  background:#f1f1f1;
+  color:#555;
+  border:1px solid #ccc;
+  box-shadow:none;
+  font-size:16px;
+  padding:8px 10px;
 }
 
-/* Checkbox lớn */
+/* ====== LABEL ====== */
+label {
+  font-size: 20px;
+  color: #ff2f92;
+  font-weight: bold;
+}
+
+/* checkbox lớn */
 #enableTimer {
   width: 26px;
   height: 26px;
 }
 
-/* chữ label dễ thương */
-label {
-  font-size: 20px;
-  color:#ff2f92;
-  font-weight:bold;
-}
-
-/* Nút chung */
-button {
-  border-radius: 16px;
-  padding: 12px 20px;
-  font-size: 17px;
-  font-weight: bold;
-  border:none;
-  transition: transform .1s;
-}
-
-button:active{
-  transform: scale(.96);
-}
-
-/* Hộp kết quả */
-.resultBox {
-  margin-top: 15px;
-  padding: 20px;
+/* ====== CREATED EXERCISE BLOCK ====== */
+.exercise {
+  background: white;
+  padding: 18px;
   border-radius: 18px;
-  background: #fff7fd;
-  box-shadow: 0 0 12px rgba(255,105,180,0.3);
+  box-shadow: 0 4px 10px rgba(255, 105, 180, 0.25);
+  margin-bottom: 16px;
+  border: 2px dashed #ffb6e6;
+}
+
+/* ====== QUIZ CONTAINER ====== */
+.quiz-container {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CARD TRANSITION EFFECT */
+.exercise-card {
+  width: 100%;
+  max-width: 700px;
+  padding: 22px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(255, 105, 180, .25);
+  opacity: .3;
+  transform: scale(.95);
+  transition: .4s;
+}
+
+.exercise-card.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ====== QUESTION TEXT ====== */
+.questionText {
+  font-size: 46px;
+  font-weight: 900;
   text-align: center;
+  color: #ff2f92;
+  margin-bottom: 16px;
 }
 
-.resultTitle {
-  font-size: 30px;
-  font-weight: bold;
-  color:#ff2f92;
-  margin-bottom: 12px;
+/* ====== ANSWERS ====== */
+.answers {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
 }
 
-.resultStats {
+.answers button {
+  font-size: 28px;
+  padding: 20px 10px;
+  border-radius: 20px;
+  background:#fff3fb;
+  border:3px solid #ff8fd6;
+}
+
+.answers button.correct {
+  background:#b7ffb7;
+  border-color:#00b341;
+}
+
+.answers button.wrong {
+  background:#ffbaba;
+  border-color:#ff0000;
+}
+
+/* ====== FINAL RESULT BLOCK ====== */
+.bigResultBox {
+  margin-top: 20px;
+  padding: 25px;
+  border-radius: 22px;
+  background: #fff2fb;
+  box-shadow: 0 6px 16px rgba(255, 105, 180, 0.3);
+}
+
+.bigResultTitle {
+  font-size: 40px;
+  text-align: center;
+  font-weight: 900;
+  color: #ff2f92;
+  margin-bottom: 16px;
+}
+
+.bigResultStats {
   display: flex;
   justify-content: center;
   gap: 20px;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.statItem {
+.bigCorrect {
+  background: #e8ffec;
+  border: 3px solid #2fb15a;
+  color: #0a6b2b;
   font-size: 26px;
+  padding: 12px 18px;
+  border-radius: 18px;
+}
+
+.bigWrong {
+  background: #ffe8e8;
+  border: 3px solid #ff4d4d;
+  color: #8b0000;
+  font-size: 26px;
+  padding: 12px 18px;
+  border-radius: 18px;
+}
+
+/* ====== RESULT LIST ====== */
+.resultList {
+  font-size: 24px;
+  line-height: 1.6;
+}
+
+.resultItemCorrect {
+  color: #0a6b2b;
   font-weight: bold;
-  padding: 12px 20px;
-  border-radius: 14px;
-  min-width: 200px;
 }
 
-.correctStat {
-  background: #e8ffed;
-  border: 2px solid #2fb15a;
-  color: #0b6b2b;
+.resultItemWrong {
+  color: #8b0000;
+  font-weight: bold;
 }
-
-.wrongStat {
-  background: #ffeaea;
-  border: 2px solid #ff3b3b;
-  color: #9b0000;
-}
-
-#clearExercisesBtn {
-  background-color: #e74c3c;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-#clearExercisesBtn:hover {
-  opacity: .8;
-}
-/* Bao vùng nút + label trạng thái */
-.add-exercise-row {
-  display: flex;
-  align-items: center;      /* canh giữa theo chiều dọc */
-  gap: 12px;                /* khoảng cách giữa nút và text */
-  margin-top: 8px;
-}
-
-/* Nút bấm nhìn cân đối hơn */
-button {
-  border-radius: 10px;
-  padding: 8px 14px;
-}
-
 </style>
+
 
 </head>
 
 <body>
 
-<div class="tabs">
-  <button class="active" onclick="showTab(0)">✏️ Tạo bài toán</button>
-  <button onclick="showTab(1)">🎯 Bắt đầu làm bài</button>
-</div>
+  <div class="tabs">
+    <button class="active" onclick="showTab(0)">✏️ Tạo bài toán</button>
+    <button onclick="showTab(1)">🎯 Bắt đầu làm bài</button>
+  </div>
 
-<!-- ===== TAB 1: Tạo bài toán ===== -->
-<section class="active">
-<h2>✏️ Tạo bài toán cho bé</h2>
+  <!-- ===== TAB 1: Tạo bài toán ===== -->
+  <section class="active">
+    <h3>Nhập phép toán</h3>
 
-<label>Số thứ nhất</label>
-<input type="number" id="n1" value="1">
+    <input id="singleInput" placeholder="Ví dụ: 3+4 hoặc 10-2" />
 
-<label>Số thứ hai</label>
-<input type="number" id="n2" value="1">
+    <button class="practice" onclick="addSingleExercise()">Thêm bài toán</button>
+    <button onclick="clearAllExercises()" class="delete-all">
+      ❌ Xóa tất cả bài toán đã lưu
+    </button>
 
-<label>Phép toán</label>
-<select id="op">
-  <option value="+">Cộng (+)</option>
-  <option value="-">Trừ (-)</option>
-  <option value="*">Nhân (×)</option>
-</select>
-
-<div class="add-exercise-row">
-<button class="primary" onclick="addExercise()">➕ Thêm bài toán</button>
-
-<button id="clearExercisesBtn">Xóa tất cả phép tính</button>
-</div>
+    <div id="addedCount"></div>
 
 
-
-<div id="addMsg" style="color:green;display:none;">Đã thêm bài toán ✔️</div>
-
-
-<hr>
-<h3>📚 Danh sách bài đã tạo</h3>
-<ul id="list"></ul>
-
-</section>
-
-<!-- ===== TAB 2: Làm bài ===== -->
-<section>
-<h2>🎯 Bé làm bài tập</h2>
-<div id="timerDisplay" style="font-weight:bold; font-size:18px;"></div>
-
-<label>
-    <input type="checkbox" id="enableTimer">
-    Bật chế độ làm bài có thời gian
-  </label>
-
-  <input type="number" id="timerMinutes" placeholder="Số phút" min="1" style="display:none;">
-
-  <br><br>
-
-<button id="startButton" class="practice" onclick="startPractice()">▶️ Bắt đầu</button>
-
-<div id="practiceArea"></div>
+    <div id="addMsg" style="color:green;display:none;">Đã thêm bài toán ✔️</div>
 
 
-<button id="finishButton" onclick="finishQuiz()">Hoàn thành</button>
-<div id="resultDisplay"></div>
+    <hr>
+    <h3>📚 Danh sách bài đã tạo</h3>
+    <ul id="list"></ul>
 
-</section>
+  </section>
 
-
-
-<script>
-
-const fireworkSound = new Audio("Sound/Fireworks.mp3");
-const applauseSound = new Audio("Sound/Clap.mp3");
-
-let exercises = JSON.parse(localStorage.getItem("math") || "[]");
-let wrongList = JSON.parse(localStorage.getItem("wrong_math") || "[]");
-
-function save(){
-  localStorage.setItem("math", JSON.stringify(exercises));
-  localStorage.setItem("wrong_math", JSON.stringify(wrongList));
-  renderList();
-}
-
-function showTab(i){
-  document.querySelectorAll("section").forEach((s,idx)=>s.classList.toggle("active",idx===i));
-  document.querySelectorAll(".tabs button").forEach((b,idx)=>b.classList.toggle("active",idx===i));
-}
-
-function randomAnswers(correct) {
-  let set = new Set([correct]);
-
-  while (set.size < 4) {
-    let d = correct + Math.floor(Math.random() * 11) - 5;
-
-    // ❌ bỏ số âm
-    if (d < 0) continue;
-
-    // thêm vào nếu hợp lệ
-    set.add(d);
-  }
-
-  return Array.from(set).sort(() => Math.random() - 0.5);
-}
+  <!-- ===== TAB 2: Làm bài ===== -->
+  <section>
+    <h2>🎯 Bé làm bài tập</h2>
 
 
-/* ===== thêm bài toán ===== */
-function addExercise(){
-  let a = parseInt(n1.value);
-  let b = parseInt(n2.value);
-  let o = op.value;
+    <button id="startButton" class="practice" onclick="startPractice()">▶️ Bắt đầu</button>
 
-  let correct =
-    o==="+" ? a+b :
-    o==="-" ? a-b :
-    a*b;
+    <div id="practiceArea"></div>
 
-  exercises.push({
-    a,b,o,correct
-  });
+    <button id="finishButton" onclick="finishQuiz()">Hoàn thành</button>
+    <div id="resultDisplay"></div>
 
-  addMsg.style.display="block";
-  setTimeout(()=>addMsg.style.display="none",1500);
+  </section>
 
-  save();
-}
 
-/* ===== hiển thị danh sách đã tạo ===== */
-function renderList(){
-  list.innerHTML = "";
-  [...exercises].forEach(ex=>{
-    let li = document.createElement("li");
-    li.textContent = `${ex.a} ${ex.o} ${ex.b} = ?`;
-    list.appendChild(li);
-  });
-}
+  <script>
 
-renderList();
+    // ====== DỮ LIỆU ======
+    let exercises = JSON.parse(localStorage.getItem("exercises") || "[]");
+    let wrongList = [];
+    const soundCorrect = new Audio("Sound/Corect.mp3");
+    const soundWrong = new Audio("Sound/Wrong.mp3");
+    const applauseSound = new Audio("Sound/Clap.mp3");
+    const fireworkSound = new Audio("Sound/Fireworks.mp3");
+    let autoNextTimer = null;
+    let finalResults = new Map();
 
-function startPractice() {
+    renderList();
 
-resultDisplay.innerHTML = "";
-  wrongList = [];
-  exercises.forEach(ex => {
-    ex.userAnswer = null;
-    ex.isCorrect = null;
-  });
-
-// xử lý thời gian
-  if (enableTimer.checked) {
-
-    let minutes = parseInt(timerMinutes.value);
-
-    if (!minutes || minutes <= 0) {
-      alert("Nhập số phút hợp lệ");
-      return;
+    // ====== TAB ======
+    function showTab(i) {
+      document.querySelectorAll("section").forEach((s, idx) => s.classList.toggle("active", idx === i));
+      document.querySelectorAll(".tabs button").forEach((b, idx) => b.classList.toggle("active", idx === i));
     }
 
-    remainingSeconds = minutes * 60;
-    updateTimerUI();
+    // ====== THÊM 1 PHÉP TOÁN ======
+    function addSingleExercise() {
+      const raw = document.getElementById("singleInput").value.trim();
 
-    timerInterval = setInterval(() => {
-      remainingSeconds--;
-      updateTimerUI();
-
-      if (remainingSeconds <= 0) {
-        clearInterval(timerInterval);
-        alert("Hết thời gian");
-        finishQuiz();
+      if (!raw) {
+        alert("Vui lòng nhập phép toán");
+        return;
       }
-    }, 1000);
-  }
 
+      const text = raw.replace(/\s+/g, "");
+      const match = text.match(/^(\d+)([\+\-\*\/])(\d+)$/);
 
-  // ẩn nút bắt đầu cho đến khi hoàn thành
-  document.getElementById("startButton").style.display = "none";
-  document.getElementById("finishButton").style.display = "inline-block";
-
-  // ẩn cấu hình thời gian
-  document.getElementById("enableTimer").style.display = "none";
-  document.getElementById("timerMinutes").style.display = "none";
-
-  // ưu tiên bài sai
-  let pool = wrongList.length ? wrongList : exercises;
-
-  practiceArea.innerHTML = "";
-
-  pool.forEach((ex, idx) => {
-
-    let div = document.createElement("div");
-    div.className = "exercise";
-
-    div.innerHTML = `
-      <div style="font-size:24px; font-weight:bold; margin-bottom:10px;">
-        ${ex.a} ${ex.o} ${ex.b} = ?
-      </div>
-      <div class="answers" id="ans${idx}"></div>
-    `;
-
-    let answers = randomAnswers(ex.correct);
-    let area = div.querySelector(".answers");
-
-    answers.forEach(val => {
-
-      let btn = document.createElement("button");
-      btn.textContent = val;
-
-      btn.onclick = ()=>{
-
-        // ⛔ không cho trả lời sau khi hoàn thành
-        if (quizFinished) return;
-
-        // trước tiên bỏ chọn cũ trong cùng bài
-        [...btn.parentNode.children].forEach(b=>b.classList.remove("selected"));
-
-        // đánh dấu nút đang chọn
-        btn.classList.add("selected");
-
-        ex.userAnswer = val;
-        };
-
-
-      area.appendChild(btn);
-    });
-
-    practiceArea.appendChild(div);
-  });
-
-}
-
-let quizFinished = false;
-let timerInterval = null;
-let remainingSeconds = 0;
-let quizLocked = false;
-function renderQuiz(list) {
-  const container = document.getElementById("quizArea");
-  container.innerHTML = "";
-  answers = {};
-
-  list.forEach((ex, idx) => {
-
-    // tạo khung bài tập
-    const wrapper = document.createElement("div");
-    wrapper.className = "exercise";
-
-    // tiêu đề bài toán
-    const title = document.createElement("div");
-    title.innerHTML = `<b>${ex.a} ${ex.op} ${ex.b} = ?</b>`;
-    wrapper.appendChild(title);
-
-    // tạo 4 phương án
-    const options = randomAnswers(ex.result);
-
-    options.forEach(value => {
-      const opt = document.createElement("div");
-      opt.className = "option";
-      opt.textContent = value;
-
-      opt.onclick = () => {
-        // lưu đáp án bé chọn
-        answers[idx] = value;
-
-        // bỏ highlight cũ
-        wrapper.querySelectorAll(".option").forEach(o => {
-          o.style.outline = "none";
-        });
-
-        // highlight phương án đang chọn
-        opt.style.outline = "3px solid blue";
-      };
-
-      wrapper.appendChild(opt);
-    });
-
-    container.appendChild(wrapper);
-  });
-}
-
-
-function updateTimerLabel() {
-  const box = document.getElementById("timerBox");
-  box.style.display = "block";
-
-  const min = Math.floor(remainingSeconds / 60);
-  const sec = remainingSeconds % 60;
-
-  box.innerText = `⏳ Còn lại: ${min}:${sec.toString().padStart(2,"0")}`;
-}
-
-
-function finishQuiz() {
-
-  clearInterval(timerInterval);
-
-  // 1️⃣ Ẩn nút hoàn thành – hiện nút bắt đầu lại
-  document.getElementById("finishButton").style.display = "none";
-  document.getElementById("startButton").style.display = "inline-block";
-
-  let correctCount = 0;
-  wrongList = [];
-
-  document.querySelectorAll(".exercise").forEach((div, idx) => {
-
-    const ex = exercises[idx];
-    const buttons = div.querySelectorAll("button");
-
-    buttons.forEach(btn => {
-      const val = parseInt(btn.textContent);
-
-      // khóa toàn bộ nút
-      btn.disabled = true;
-
-      // chỉ xử lý nút được bé chọn
-      if (ex.userAnswer === val) {
-
-        // bỏ màu vàng đã chọn lúc làm bài
-        btn.classList.remove("selected");
-
-        // đúng → xanh
-        if (val === ex.correct) {
-          btn.classList.add("correct");
-          correctCount++;
-        }
-        // sai → đỏ
-        else {
-          btn.classList.add("wrong");
-          wrongList.push(ex);
-        }
+      if (!match) {
+        alert("Ví dụ hợp lệ: 3+4, 6-2, 4*5, 8/2");
+        return;
       }
-    });
-  });
 
-  // lưu bài sai
-  localStorage.setItem("wrong_math", JSON.stringify(wrongList));
+      const a = parseInt(match[1]);
+      const op = match[2];
+      const b = parseInt(match[3]);
 
-  // âm thanh chúc mừng
-  applauseSound.play();
-    fireworkSound.play();
+      let result;
+      switch (op) {
+        case "+": result = a + b; break;
+        case "-": result = a - b; break;
+        case "*": result = a * b; break;
+        case "/": result = Math.floor(a / b); break;
+      }
 
-  // hiện kết quả
-resultDisplay.innerHTML = `
-  <div class="resultBox">
-    <div class="resultTitle">🎉 Hoàn thành bài làm!</div>
+      exercises.push({
+        a, b, op, result,
+        userAnswer: null
+      });
 
-    <div class="resultStats">
-      <div class="statItem correctStat">
-        ✅ Đúng: <span>${correctCount}</span> / ${exercises.length}
+      localStorage.setItem("exercises", JSON.stringify(exercises));
+
+      document.getElementById("singleInput").value = "";
+      document.getElementById("addedCount").textContent = "Đã thêm 1 bài toán";
+      renderList();
+    }
+
+    // ====== DANH SÁCH BÀI TOÁN ======
+    function renderList() {
+      const listBox = document.getElementById("list");
+
+      if (!exercises.length) {
+        listBox.innerHTML = "<li>Chưa có bài toán nào</li>";
+        return;
+      }
+
+      listBox.innerHTML = "";
+
+      exercises.forEach(ex => {
+        const li = document.createElement("li");
+        li.textContent = `${ex.a} ${ex.op} ${ex.b} = ?`;
+        listBox.appendChild(li);
+      });
+    }
+
+
+    // ====== BẮT ĐẦU LÀM BÀI ======
+    let timerInterval = null;
+    let remainingSeconds = 0;
+
+    let currentIndex = 0;
+    let mainQueue = [];
+    let retryQueue = [];
+    let quizFinished = false;
+
+    function startPractice() {
+
+      if (!exercises.length) {
+        alert("Chưa có bài toán nào");
+        return;
+      }
+
+      quizFinished = false;
+      currentIndex = 0;
+      retryQueue = [];
+
+      // tạo hàng đợi chính
+      mainQueue = exercises.map(x => ({
+        ...x,
+        options: randomAnswers(x.result),
+        userAnswer: null,
+        repeated: false
+      }));
+
+      // UI
+      startButton.style.display = "none";
+      finishButton.style.display = "none";
+
+
+      resultDisplay.innerHTML = "";
+      practiceArea.innerHTML = "";
+
+      renderCurrentQuestion();
+    }
+
+
+    function randomAnswers(correct) {
+      let set = new Set([correct]);
+
+      while (set.size < 4) {
+        let v = correct + Math.floor(Math.random() * 11) - 5;
+        if (v < 0) continue;
+        set.add(v);
+      }
+
+      return Array.from(set).sort(() => Math.random() - 0.5);
+    }
+
+    function renderCurrentQuestion() {
+
+      if (currentIndex >= mainQueue.length) {
+
+        // xong lượt đầu → làm lại câu sai
+        if (retryQueue.length === 0) {
+          finishQuiz();
+          return;
+        }
+
+        mainQueue = retryQueue;
+        retryQueue = [];
+        currentIndex = 0;
+      }
+
+      const ex = mainQueue[currentIndex];
+
+      practiceArea.innerHTML = `
+  <div class="quiz-container">
+    <div id="card" class="exercise-card">
+
+      <div class="questionText">
+        ${ex.a} ${ex.op} ${ex.b} = ?
       </div>
 
-      <div class="statItem wrongStat">
-        🔁 Sai cần luyện thêm: <span>${wrongList.length}</span>
+      <div id="answerBox" class="answers"></div>
+
+      <div id="nextBtnBox" style="margin-top:20px;text-align:center;">
+        <button id="nextButton" onclick="skipQuestion()" style="padding:10px 18px;font-size:20px;">
+          ➡️ Qua câu tiếp theo
+        </button>
       </div>
+
     </div>
   </div>
 `;
 
-}
 
-document.getElementById("enableTimer").addEventListener("change", function () {
-  const timerInput = document.getElementById("timerMinutes");
-  timerInput.style.display = this.checked ? "inline-block" : "none";
-});
 
-function updateTimerUI() {
-  const m = Math.floor(remainingSeconds / 60);
-  const s = remainingSeconds % 60;
+      const card = document.getElementById("card");
+      setTimeout(() => card.classList.add("show"), 10);
 
-  timerDisplay.textContent =
-    `⏳ Thời gian còn lại: ${m}:${s.toString().padStart(2,"0")}`;
-}
+      const answerBox = document.getElementById("answerBox");
 
-document.getElementById("clearExercisesBtn").addEventListener("click", () => {
-    if (!confirm("Bạn có chắc muốn xóa tất cả phép tính?")) return;
+      const options = randomAnswers(ex.result);
 
-    // 1. Xóa dữ liệu trong biến
-    exercises = [];
-    correctCount = 0;
-    wrongList = [];
+      options.forEach(v => {
+        const btn = document.createElement("button");
+        btn.textContent = v;
 
-    // 2. Xóa localStorage
-    localStorage.removeItem("exercises");
-    localStorage.removeItem("wrongList");
-    localStorage.removeItem("quizProgress");
-    localStorage.removeItem("math");
-    localStorage.removeItem("wrong_math");
+        btn.onclick = () => {
 
-    
-    // 3. Xóa danh sách hiển thị trong tab tạo bài
-    const exerciseList = document.getElementById("exerciseList");
-    if (exerciseList) {
-        exerciseList.innerHTML = "";
+          if (quizFinished) return;
+
+          ex.userAnswer = v;
+
+          // khóa tất cả nút
+          [...answerBox.children].forEach(b => {
+            b.disabled = true;
+          });
+
+          // đúng
+          if (v === ex.result) {
+            btn.classList.add("correct");
+            soundCorrect.play();
+            finalResults.set(ex, true); // ghi đúng
+          }
+          // sai
+          else {
+
+            btn.classList.add("wrong");
+            soundWrong.play();
+
+            // chỉ thêm lại 1 lần
+            if (!ex.repeated) {
+              ex.repeated = true;
+              retryQueue.push(ex);
+            }
+
+            finalResults.set(ex, false); // ghi sai
+          }
+
+          setAutoNext();
+        };
+
+        answerBox.appendChild(btn);
+      });
+
+      // Ẩn nút Qua câu tiếp theo nếu là câu cuối
+      const nextButton = document.getElementById("nextButton");
+
+      if (currentIndex >= mainQueue.length - 1) {
+        nextButton.style.display = "none";
+      }
+
     }
 
-    // 4. Xóa danh sách câu hỏi đang hiển thị (nếu đã render quiz)
-    const quizContainer = document.getElementById("quizContainer");
-    if (quizContainer) {
-        quizContainer.innerHTML = "";
+
+    function finishQuiz() {
+
+      clearInterval(timerInterval);
+
+      document.getElementById("finishButton").style.display = "none";
+      document.getElementById("startButton").style.display = "inline-block";
+
+      let correctCount = 0;
+      let wrongCount = 0;
+      let wrongList = [];
+
+      finalResults.forEach(v => {
+        if (v) correctCount++;
+        else wrongCount++;
+      });
+
+      applauseSound.play();
+      fireworkSound.play();
+
+      resultDisplay.innerHTML = `
+    <div class="bigResultBox">
+
+      <div class="bigResultTitle">
+        🎉 Bé đã hoàn thành bài làm!
+      </div>
+
+      <div class="bigResultStats">
+        <div class="bigCorrect">
+          ✅ Đúng: ${correctCount} / ${exercises.length}
+        </div>
+
+        <div class="bigWrong">
+          ❌ Sai: ${wrongCount}
+        </div>
+      </div>
+    </div>
+  `;
     }
 
-    // 5. Xóa kết quả thống kê
-    const resultDisplay = document.getElementById("resultDisplay");
-    if (resultDisplay) {
-        resultDisplay.innerHTML = "";
+    function skipQuestion() {
+      if (quizFinished) return;
+
+      clearTimeout(autoNextTimer); // hủy hẹn cũ
+
+      currentIndex++;
+      renderCurrentQuestion();     // tạo hẹn mới bên trong
+    }
+    function setAutoNext() {
+      clearTimeout(autoNextTimer);
+
+      autoNextTimer = setTimeout(() => {
+        currentIndex++;
+        renderCurrentQuestion();
+      }, 5000);
+    }
+    function clearAllExercises() {
+      if (!confirm("Bạn có chắc muốn xóa toàn bộ bài toán không?")) return;
+
+      exercises = [];
+      localStorage.removeItem("exercises");
+      renderList();
+      document.getElementById("addedCount").textContent = "";
     }
 
-    // 6. Ẩn nút hoàn thành
-    const finishBtn = document.getElementById("finishQuizBtn");
-    if (finishBtn) finishBtn.style.display = "none";
-
-    // 7. Hiện nút bắt đầu
-    const startBtn = document.getElementById("startQuizBtn");
-    if (startBtn) startBtn.style.display = "inline-block";
-
-    renderList();
-    alert("Đã xóa tất cả phép tính và dữ liệu bộ nhớ.");
-});
+  </script>
 
 
-</script>
 
 </body>
+
 </html>
